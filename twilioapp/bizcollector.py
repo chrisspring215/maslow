@@ -18,19 +18,48 @@ listOfCategoriesHrefsLength = len(listOfCategoriesHrefs)
 
 bizs = []
 
-# This is working it just takes forever. The range should be set to listOfCategoriesHrefsLength
+# For every category...
 for i in range(listOfCategoriesHrefsLength):
 
-    alpha = indexCat = requests.get(baseURL + listOfCategoriesHrefs[i])
-    beta = html.fromstring(alpha.content)
-    theta = beta.xpath('//div[@class="paginationContent"]/ul/li')
-    indexCat = requests.get(baseURL + listOfCategoriesHrefs[i])
-    bizTree = html.fromstring(indexCat.content)
-    thetaLength = len(theta)
+    # Open each category
+    a = requests.get(baseURL + listOfCategoriesHrefs[i])
+    # Create a tree with the DOM structure
+    b = html.fromstring(a.content)
+    # Look through that tree to find how many pages are within the category (pagination)
+    c = b.xpath('//div[@class="paginationContent"]/ul/li')
+    # If the category only has one page, look for results on the page
+    if c == []:
+        cc = b.xpath('//div[@class="innerDetailsSubLeft"]/div[contains(@class, "resultWrapper")]/div[@class="resultInner "]/h3/a/text()')
+        if cc == []:
+            #do nothing
+        else:
+            print "have a party"
+    else:
+        print "multi pages"
 
-    print (thetaLength / 2) - 1
 
+    d = len(c) 
+    # This is the true number of pages, will sometimes be -1 since some pages have no results
+    e = d / 2 - 1
+   
+    # This is the results on each page
+    h = b.xpath('//div[@class="innerDetailsSubLeft"]/div[contains(@class, "resultWrapper")]/div[@class="resultInner "]/h3/a/text()')
+
+    # This is the number of results on each page
+    j = len(h)
     
+    #for x in range(e):
+        #print j
+        #if e == 1:
+        #    h = b.xpath('//div[@class="resultInner "]/h3//@title')
+        #    print h
+        # Elif category is empty
+        #elif e == -1:
+        #    print "do nothing"
+        #else:
+        #    print "do nothing"
+
+
 
     # other for loop goes here !!!!!
     #bizsGroup = bizTree[i].xpath('//div[@class="resultInner reviews"]/h3//@title ')
